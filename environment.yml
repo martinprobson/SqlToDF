@@ -1,0 +1,5 @@
+name: SqlToDF
+channels:
+- defaults
+dependencies:
+- pandas
