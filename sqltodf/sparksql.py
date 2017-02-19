@@ -1,5 +1,5 @@
 '''
-Accept SQL statement and return Panda's dataframe object containing SQL result or 
+Accept SQL statement and return Panda's dataframe object containing SQL result or
 raise SqlToDFExeception on error.
 Created on 15 Feb 2017
 
@@ -10,21 +10,26 @@ from __future__ import print_function
 import os
 import sys
 import glob
-import pandas as pd
-from exceptions import SqlToDFException
-from base import AbstractSqlToDF
-import config as cfg
+import sqltodf.config as cfg
+from .exceptions import SqlToDFException
+from .base import AbstractSqlToDF
+
+
 
 class SparkSqlToDF(AbstractSqlToDF):
+    ''' Conversion of Hive SQL resultset to Panda's dataframe.
+    '''
     def __init__(self, *args,**kwargs):
         '''
         Constructor
-        Check for the existence of SPARK_HOME in the environment - this is required for the Spark libraries.
+        Check for the existence of SPARK_HOME in the environment
         Add the required SPARK libraries to the system path.
         Configure and start up a Spark and Hive context
         '''
+        super(SparkSqlToDF, self).__init__()
         if not os.environ.has_key('SPARK_HOME'):
-            raise SqlToDFException("Environment variable SPARK_HOME must be set to the root directory of the SPARK installation")
+            raise SqlToDFException("Environment variable SPARK_HOME must be set " +
+                                   "to the root directory of the SPARK installation")
         spark_home_py = os.path.expandvars("$SPARK_HOME/python")
         sys.path.append(spark_home_py)
         file_list = glob.glob(spark_home_py + "/lib/py4j*.zip")
@@ -37,11 +42,6 @@ class SparkSqlToDF(AbstractSqlToDF):
             from pyspark.sql import HiveContext
         except ImportError:
             raise SqlToDFException("Required pyspark modules cannot be found")
-        try:
-            import pandas as pd
-        except ImportError:
-            raise SqlToDFException("Required pandas library cannot be found")
-
         # Hack to force spark.driver.memory to get set.
         if cfg.spark.has_key('spark.driver.memory'):
             memory = cfg.spark['spark.driver.memory']
@@ -50,22 +50,24 @@ class SparkSqlToDF(AbstractSqlToDF):
         pyspark_submit_args = ' --driver-memory ' + memory + ' pyspark-shell'
         os.environ["PYSPARK_SUBMIT_ARGS"] = pyspark_submit_args
 
-        self.sc = SparkContext(conf = self._sparkConfig(SparkConf()))
-        self.sc.setLogLevel('WARN')
-        self.hc = HiveContext(self.sc)
+        self.spark_context = SparkContext(conf = self._sparkconfig(SparkConf()))
+        self.spark_context.setLogLevel('WARN')
+        self.hive_context = HiveContext(self.spark_context)
 
-    def _sparkConfig(self,sparkc):
+    def _sparkconfig(self,sparkc):
         '''
         Build SparkConf object
         '''
         sparkc.setMaster(cfg.spark_mode).setAppName(cfg.app_name)
-        for k in cfg.spark.keys():
+        for k in cfg.spark:
             sparkc.set(k,cfg.spark[k])
         self.conf = sparkc
         return self.conf
 
 
-    def dumpConfig(self):
+    def dumpconfig(self):
+        ''' Dump current Spark Config to stdout
+        '''
         for itm in self.conf.getAll():
             print(itm)
 
@@ -77,7 +79,7 @@ class SparkSqlToDF(AbstractSqlToDF):
         Note a valid kerberos ticket is assumed.
         :param sql: the sql statement to run.
         '''
-        spark_df = self.hc.sql(sql)
+        spark_df = self.hive_context.sql(sql)
         pandas_df = spark_df.toPandas()
         spark_df.unpersist()
         return pandas_df

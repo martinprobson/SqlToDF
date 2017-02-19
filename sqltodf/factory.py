@@ -3,7 +3,7 @@ Created on 15 Feb 2017
 
 @author: martinr
 '''
-from sqltodf.sparksql import SparkSqlToDF
+from .sparksql import SparkSqlToDF
 
 class Factory(object):
     '''
@@ -22,4 +22,3 @@ class Factory(object):
         if factory_class:
             return factory_class(*args,**kwargs)
         raise NotImplementedError("The requested SqlToDF class has not been implemented")
-        

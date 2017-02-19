@@ -17,7 +17,7 @@ Module is installed in `doxjs04://data/group/techrevass/sw/share/python/lib` so 
     export PYTHONPATH=$PYTHONPATH:/data/group/techrevass/sw/share/python/lib
 ```
 
-### Example
+### Example2
 ```python
     import pandas as pd
     import numpy as np
