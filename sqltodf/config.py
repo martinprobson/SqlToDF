@@ -8,7 +8,7 @@ Created on 15 Feb 2017
 #
 # Spark parameters
 #
-spark = {
+SPARK = {
         'spark.executor.memory': '3g',
         'spark.driver.maxResultSize' : 2048,
         'spark.driver.memory' : '10g',
@@ -18,8 +18,8 @@ spark = {
 #
 # Spark application name
 #
-app_name = 'SqlToPandas'
+APP_NAME = 'SqlToPandas'
 #
 # Spark execution mode
 #
-spark_mode = 'local[10]'
+SPARK_MODE = 'local[10]'

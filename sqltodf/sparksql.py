@@ -43,8 +43,8 @@ class SparkSqlToDF(AbstractSqlToDF):
         except ImportError:
             raise SqlToDFException("Required pyspark modules cannot be found")
         # Hack to force spark.driver.memory to get set.
-        if cfg.spark.has_key('spark.driver.memory'):
-            memory = cfg.spark['spark.driver.memory']
+        if cfg.SPARK.has_key('spark.driver.memory'):
+            memory = cfg.SPARK['spark.driver.memory']
         else:
             memory = '1g'
         pyspark_submit_args = ' --driver-memory ' + memory + ' pyspark-shell'
@@ -58,9 +58,9 @@ class SparkSqlToDF(AbstractSqlToDF):
         '''
         Build SparkConf object
         '''
-        sparkc.setMaster(cfg.spark_mode).setAppName(cfg.app_name)
-        for k in cfg.spark:
-            sparkc.set(k,cfg.spark[k])
+        sparkc.setMaster(cfg.SPARK_MODE).setAppName(cfg.APP_NAME)
+        for k in cfg.SPARK:
+            sparkc.set(k,cfg.SPARK[k])
         self.conf = sparkc
         return self.conf
 

@@ -10,7 +10,7 @@ class Factory(object):
     Factory class to create sqltodf instances.
     '''
     __factory_classes = {
-        "spark": SparkSqlToDF
+        "spark":  SparkSqlToDF,
         }
 
     @staticmethod
