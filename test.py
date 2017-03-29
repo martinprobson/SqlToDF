@@ -64,6 +64,11 @@ class TestSqltodf(unittest.TestCase):
         dataf = cls.SqlToPandas(sql='Select * from sqltodf_test')
         self.assertEqual(len(dataf), 2, 'Invalid dataframe length!')
         self.assertEqual(dataf.loc[0, 'age'], 16, 'Dataframe contents mis-match')
+        cls = Factory.get('Spark')
+        dataf = cls.SqlToPandas(sql='Select * from sqltodf_test')
+        self.assertEqual(len(dataf), 2, 'Invalid dataframe length!')
+        self.assertEqual(dataf.loc[0, 'age'], 16, 'Dataframe contents mis-match')
+        
 
     @classmethod
     def tearDownClass(cls):

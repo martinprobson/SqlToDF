@@ -19,6 +19,9 @@ from .base import AbstractSqlToDF
 class SparkSqlToDF(AbstractSqlToDF):
     ''' Conversion of Hive SQL resultset to Panda's dataframe.
     '''
+    __spark_context = None
+    __hive_context  = None
+    
     def __init__(self, *args,**kwargs):
         '''
         Constructor
@@ -27,6 +30,8 @@ class SparkSqlToDF(AbstractSqlToDF):
         Configure and start up a Spark and Hive context
         '''
         super(SparkSqlToDF, self).__init__()
+        if SparkSqlToDF.__spark_context:
+            return
         if not os.environ.has_key('SPARK_HOME'):
             raise SqlToDFException("Environment variable SPARK_HOME must be set " +
                                    "to the root directory of the SPARK installation")
@@ -50,9 +55,9 @@ class SparkSqlToDF(AbstractSqlToDF):
         pyspark_submit_args = ' --driver-memory ' + memory + ' pyspark-shell'
         os.environ["PYSPARK_SUBMIT_ARGS"] = pyspark_submit_args
 
-        self.spark_context = SparkContext(conf = self._sparkconfig(SparkConf()))
-        self.spark_context.setLogLevel('WARN')
-        self.hive_context = HiveContext(self.spark_context)
+        SparkSqlToDF.__spark_context = SparkContext(conf = self._sparkconfig(SparkConf()))
+        SparkSqlToDF.__spark_context.setLogLevel('WARN')
+        SparkSqlToDF.__hive_context = HiveContext(SparkSqlToDF.__spark_context)
 
     def _sparkconfig(self,sparkc):
         '''
@@ -79,7 +84,7 @@ class SparkSqlToDF(AbstractSqlToDF):
         Note a valid kerberos ticket is assumed.
         :param sql: the sql statement to run.
         '''
-        spark_df = self.hive_context.sql(sql)
+        spark_df = SparkSqlToDF.__hive_context.sql(sql)
         pandas_df = spark_df.toPandas()
         spark_df.unpersist()
         return pandas_df
