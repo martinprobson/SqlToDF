@@ -8,7 +8,7 @@ Run a simple HQL statement in Hive SparkSQL and return resultset as a Pandas dat
 ### Notes
  - Spark module imports (pyspark/pyspark sql) are not required as the module handles this.
  - Code currently runs in Spark 'local' mode so complex SQL (any type of join for example) is not supported.
- - Resulting Pandas dataframe will be in memory, so table much be small enough to allow this.
+ - Resulting Pandas dataframe will be in memory, so table must be small enough to allow this.
  - Driver memory is currently configured at 10Gb.
 
 ### Usage
@@ -17,7 +17,7 @@ Module is installed in `doxjs04://data/group/techrevass/sw/share/python/lib` so 
     export PYTHONPATH=$PYTHONPATH:/data/group/techrevass/sw/share/python/lib
 ```
 
-### Example2
+### Example 2
 ```python
     import pandas as pd
     import numpy as np
