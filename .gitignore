@@ -5,3 +5,6 @@
 *.SVG
 *.pyc
 *.log
+spark*/
+spark
+metastore_db/

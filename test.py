@@ -13,6 +13,7 @@ from multiprocessing import Process
 import pandas as pd
 
 from sqltodf import Factory
+import sqltodf.config as cfg
 
 
 class TestSqltodf(unittest.TestCase):
@@ -44,7 +45,7 @@ class TestSqltodf(unittest.TestCase):
 
             # Configure Spark
             conf = SparkConf().setAppName('SQLTODF_UT')
-            conf = conf.setMaster('local[*]')
+            conf = conf.setMaster(cfg.SPARK_MODE)
             sparkctx = SparkContext(conf=conf)
 
             pandasdf = pd.DataFrame({'name': ['Martin', 'Gemma'], 'age': [16, 52]})
@@ -61,6 +62,7 @@ class TestSqltodf(unittest.TestCase):
     def test_spark(self):
         ''' Test SqlToPandas with Spark '''
         cls = Factory.get('Spark')
+        print(cls.dumpconfig())
         dataf = cls.SqlToPandas(sql='Select * from sqltodf_test')
         self.assertEqual(len(dataf), 2, 'Invalid dataframe length!')
         self.assertEqual(dataf.loc[0, 'age'], 16, 'Dataframe contents mis-match')

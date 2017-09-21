@@ -21,7 +21,7 @@ class SparkSqlToDF(AbstractSqlToDF):
     '''
     __spark_context = None
     __hive_context  = None
-    
+
     def __init__(self, *args,**kwargs):
         '''
         Constructor
@@ -56,7 +56,7 @@ class SparkSqlToDF(AbstractSqlToDF):
         os.environ["PYSPARK_SUBMIT_ARGS"] = pyspark_submit_args
 
         SparkSqlToDF.__spark_context = SparkContext(conf = self._sparkconfig(SparkConf()))
-        SparkSqlToDF.__spark_context.setLogLevel('WARN')
+        SparkSqlToDF.__spark_context.setLogLevel('INFO')
         SparkSqlToDF.__hive_context = HiveContext(SparkSqlToDF.__spark_context)
 
     def _sparkconfig(self,sparkc):
