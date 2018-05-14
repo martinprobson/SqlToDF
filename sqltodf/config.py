@@ -23,4 +23,5 @@ APP_NAME = 'SqlToPandas'
 # Spark execution mode
 #
 #SPARK_MODE = 'local[10]'
-SPARK_MODE = 'yarn'
+#SPARK_MODE = 'yarn'
+SPARK_MODE = 'local[*]'

@@ -66,14 +66,13 @@ class SparkSqlToDF(AbstractSqlToDF):
         sparkc.setMaster(cfg.SPARK_MODE).setAppName(cfg.APP_NAME)
         for k in cfg.SPARK:
             sparkc.set(k,cfg.SPARK[k])
-        self.conf = sparkc
-        return self.conf
+        return sparkc
 
 
     def dumpconfig(self):
         ''' Dump current Spark Config to stdout
         '''
-        for itm in self.conf.getAll():
+        for itm in self.__spark_context.getConf().getAll():
             print(itm)
 
     def SqlToPandas(self,sql,*args,**kwargs):
